@@ -1,5 +1,5 @@
 # WatchPub
-**WatchPub** es una red social diseñada para quienes disfrutan compartir y descubrir contenido en un entorno dinámico e interactivo. Creada con el equilibrio perfecto entre funcionalidad y simplicidad, WatchPub permite a los usuarios expresarse, reaccionar y conectar con otros de manera ágil y fluida.
+**WatchPub** es una red social diseñada para quienes disfrutan compartir y descubrir contenido Musical. Creada con el equilibrio perfecto entre funcionalidad y simplicidad, WatchPub permite a los usuarios expresarse, reaccionar y conectar con otros de manera ágil y fluida.
 
 ## 🎯 **Concepto**
 
