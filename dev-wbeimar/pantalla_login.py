@@ -13,15 +13,15 @@ if not firebase_admin._apps:
     })
 
 class PantallaLogin(Screen):  # Cambio de nombre
-    """Pantalla de registro de usuario para WatchPub."""
+    """Pantalla de inicio de sesión para WatchPub."""
     
     def compose(self) -> ComposeResult:
         yield Header()
         yield Container(
-            Static("## Crear Cuenta", classes="titulo"),
+            Static("## Iniciar Sesión", classes="titulo"),
             Input(placeholder="Nombre de usuario", id="usuario"),
             Input(placeholder="Contraseña", password=True, id="password"),
-            Button("✅ Registrar", id="registrar"),
+            Button("✅ Iniciar sesión", id="login"),
             Button("⬅ Volver", id="volver"),
             Label("", id="mensaje")  # Mensaje de feedback
         )
@@ -30,25 +30,36 @@ class PantallaLogin(Screen):  # Cambio de nombre
     def on_button_pressed(self, event):
         """Maneja las acciones de los botones."""
         mensaje = self.query_one("#mensaje", Label)
+        usuario_input = self.query_one("#usuario", Input)
+        password_input = self.query_one("#password", Input)
         
-        if event.button.id == "registrar":
-            usuario = self.query_one("#usuario", Input).value
-            password = self.query_one("#password", Input).value
+        if event.button.id == "login":
+            usuario = usuario_input.value.strip()
+            password = password_input.value.strip()
             
             if usuario and password:
                 try:
-                    ref = db.reference("usuarios/")
-                    ref.child(usuario).set({
-                        "usuario": usuario,
-                        "password": password  # Nota: En producción, hashea la contraseña
-                    })
-                    mensaje.update("✅ Usuario registrado exitosamente en Realtime Database.")
-                    self.app.log("✅ Usuario registrado exitosamente en Realtime Database.")
+                    ref = db.reference(f"usuarios/{usuario}").get()
+                    if ref:
+                        if ref.get("password") == password:
+                            mensaje.update("✅ Ingresando...")
+                            self.app.log("✅ Ingresando...")
+                        else:
+                            mensaje.update("❌ Contraseña incorrecta.")
+                            self.app.log("❌ Contraseña incorrecta.")
+                    else:
+                        mensaje.update("❌ Usuario no encontrado en la base de datos.")
+                        self.app.log("❌ Usuario no encontrado en la base de datos.")
                 except Exception as e:
                     mensaje.update(f"❌ Error: {e}")
                     self.app.log(f"❌ Error: {e}")
             else:
                 mensaje.update("⚠️ Por favor, completa todos los campos.")
                 self.app.log("⚠️ Por favor, completa todos los campos.")
+            
+            # Limpiar los campos de entrada después de intentar iniciar sesión
+            usuario_input.value = ""
+            password_input.value = ""
+        
         elif event.button.id == "volver":
             self.app.pop_screen()  # Regresa al menú principal
