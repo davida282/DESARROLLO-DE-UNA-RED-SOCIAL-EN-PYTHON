@@ -31,7 +31,7 @@ class PantallaRegistro(Screen):  # Cambio de nombre
         mensaje = self.query_one("#mensaje", Label)
         
         if event.button.id == "registrar":
-            usuario = self.query_one("#usuario", Input).value.strip()
+            usuario = self.query_one("#usuario", Input).value.strip().lower()  # Convertir a minúsculas
             password = self.query_one("#password", Input).value.strip()
 
             if usuario and password:
