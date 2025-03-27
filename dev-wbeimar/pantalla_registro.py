@@ -31,23 +31,28 @@ class PantallaRegistro(Screen):  # Cambio de nombre
         mensaje = self.query_one("#mensaje", Label)
         
         if event.button.id == "registrar":
-            usuario = self.query_one("#usuario", Input).value
-            password = self.query_one("#password", Input).value
-            
+            usuario = self.query_one("#usuario", Input).value.strip()
+            password = self.query_one("#password", Input).value.strip()
+
             if usuario and password:
                 try:
-                    ref = db.reference("usuarios/")
-                    ref.child(usuario).set({
-                        "usuario": usuario,
-                        "password": password  # Nota: En producción, hashea la contraseña
-                    })
-                    mensaje.update("✅ Usuario registrado exitosamente en Realtime Database.")
-                    self.app.log("✅ Usuario registrado exitosamente en Realtime Database.")
+                    ref = db.reference(f"usuarios/{usuario}").get()
+                    if ref:
+                        mensaje.update("❌ El usuario ya existe. Elige otro nombre.")
+                        self.app.log("❌ Intento de registro con un usuario ya existente.")
+                    else:
+                        db.reference(f"usuarios/{usuario}").set({
+                            "usuario": usuario,
+                            "password": password  # En producción, usa hashing para la contraseña
+                        })
+                        mensaje.update("✅ Usuario registrado exitosamente.")
+                        self.app.log(f"✅ Usuario '{usuario}' registrado en la base de datos.")
                 except Exception as e:
                     mensaje.update(f"❌ Error: {e}")
                     self.app.log(f"❌ Error: {e}")
             else:
                 mensaje.update("⚠️ Por favor, completa todos los campos.")
                 self.app.log("⚠️ Por favor, completa todos los campos.")
+        
         elif event.button.id == "volver":
             self.app.pop_screen()  # Regresa al menú principal
