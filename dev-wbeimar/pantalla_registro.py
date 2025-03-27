@@ -29,10 +29,12 @@ class PantallaRegistro(Screen):  # Cambio de nombre
     def on_button_pressed(self, event):
         """Maneja las acciones de los botones."""
         mensaje = self.query_one("#mensaje", Label)
-        
+        input_usuario = self.query_one("#usuario", Input)
+        input_password = self.query_one("#password", Input)
+
         if event.button.id == "registrar":
-            usuario = self.query_one("#usuario", Input).value.strip().lower()  # Convertir a minúsculas
-            password = self.query_one("#password", Input).value.strip()
+            usuario = input_usuario.value.strip().lower()  # Convertir a minúsculas
+            password = input_password.value.strip()
 
             if usuario and password:
                 try:
@@ -53,6 +55,10 @@ class PantallaRegistro(Screen):  # Cambio de nombre
             else:
                 mensaje.update("⚠️ Por favor, completa todos los campos.")
                 self.app.log("⚠️ Por favor, completa todos los campos.")
+
+            # Borrar los campos después de presionar "Registrar"
+            input_usuario.value = ""
+            input_password.value = ""
         
         elif event.button.id == "volver":
             self.app.pop_screen()  # Regresa al menú principal

@@ -13,7 +13,7 @@ if not firebase_admin._apps:
         'databaseURL': 'https://registroususarios-94b03-default-rtdb.firebaseio.com/'
     })
 
-class PantallaLogin(Screen):  # Cambio de nombre
+class PantallaLogin(Screen):
     """Pantalla de inicio de sesión para WatchPub."""
     
     def compose(self) -> ComposeResult:
@@ -35,7 +35,7 @@ class PantallaLogin(Screen):  # Cambio de nombre
         password_input = self.query_one("#password", Input)
         
         if event.button.id == "login":
-            usuario = usuario_input.value.strip()
+            usuario = usuario_input.value.strip().lower()  # Convertir a minúsculas
             password = password_input.value.strip()
             
             if usuario and password:
