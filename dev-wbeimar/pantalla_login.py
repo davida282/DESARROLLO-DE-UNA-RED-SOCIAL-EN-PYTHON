@@ -4,6 +4,7 @@ from textual.screen import Screen
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.widgets import Button, Header, Footer, Input, Static, Label
+from mi_perfil import MiPerfil  # Importar la pantalla de perfil
 
 # Inicializar Firebase con Realtime Database solo si no está inicializado
 if not firebase_admin._apps:
@@ -44,6 +45,7 @@ class PantallaLogin(Screen):  # Cambio de nombre
                         if ref.get("password") == password:
                             mensaje.update("✅ Ingresando...")
                             self.app.log("✅ Ingresando...")
+                            self.app.push_screen(MiPerfil(usuario))  # Redirigir al perfil
                         else:
                             mensaje.update("❌ Contraseña incorrecta.")
                             self.app.log("❌ Contraseña incorrecta.")
