@@ -8,7 +8,45 @@ from visitar_perfil import VisitarPerfil
 
 class MiPerfil(Screen):
     """Pantalla de perfil del usuario en WatchPub."""
-    
+
+    CSS = """
+    Button#publicar {
+        background: green;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#publicar:hover {
+        background: darkgreen;
+    }
+
+    Button#buscar {
+        background: blue;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#buscar:hover {
+        background: darkblue;
+    }
+
+    Button#salir {
+        background: gray;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#salir:hover {
+        background: darkgray;
+    }
+    """
+
     def __init__(self, usuario: str):
         super().__init__()
         self.usuario = usuario  # Guardar el nombre de usuario
@@ -27,7 +65,7 @@ class MiPerfil(Screen):
             Label("", id="mensaje")  # Mensaje de feedback
         )
         yield Footer()
-    
+
     def on_mount(self):
         """Carga las publicaciones después de que la pantalla esté completamente construida."""
         self.cargar_publicaciones()
@@ -46,22 +84,22 @@ class MiPerfil(Screen):
         publicacion_input = self.query_one("#publicacion", Input)
         buscar_input = self.query_one("#buscar_usuario", Input)
         lista_publicaciones = self.query_one("#lista_publicaciones", Static)
-        
+
         self.app.log(f"🔘 Botón presionado: {event.button.id}")
         mensaje.update(f"🔘 Botón presionado: {event.button.id}")
         self.refresh()
-        
+
         if event.button.id == "publicar":
             texto = publicacion_input.value.strip()
             if texto:
                 mensaje.update("✅ Publicación enviada.")
                 self.app.log(f"✅ Publicación de {self.usuario}: {texto}")
                 publicacion_input.value = ""  # Limpiar el campo después de publicar
-                
+
                 # Guardar publicación en la base de datos
                 publicaciones_ref = db.reference(f"usuarios/{self.usuario}/publicaciones")
                 publicaciones_ref.push(texto)
-                
+
                 # Mostrar la publicación en pantalla
                 self.publicaciones.append(texto)
                 lista_publicaciones.update("\n".join(self.publicaciones))
@@ -69,13 +107,13 @@ class MiPerfil(Screen):
                 mensaje.update("⚠️ Escribe algo antes de publicar.")
                 self.app.log("⚠️ Intento de publicación vacía.")
             self.refresh()
-        
+
         elif event.button.id == "buscar":
             usuario_a_buscar = buscar_input.value.strip()
             self.app.log(f"🔍 Intentando buscar: {usuario_a_buscar}")
             mensaje.update(f"🔍 Intentando buscar: {usuario_a_buscar}")
             self.refresh()
-            
+
             if usuario_a_buscar:
                 try:
                     ref = db.reference(f"usuarios/{usuario_a_buscar}").get()
@@ -97,7 +135,7 @@ class MiPerfil(Screen):
                 mensaje.update("⚠️ Por favor, completa el campo de búsqueda.")
                 self.app.log("⚠️ Intento de búsqueda vacía.")
                 self.refresh()
-        
+
         elif event.button.id == "salir":
             self.app.exit()  # Cierra la aplicación y regresa al menú principal
 

@@ -15,7 +15,33 @@ if not firebase_admin._apps:
 
 class PantallaLogin(Screen):
     """Pantalla de inicio de sesión para WatchPub."""
-    
+
+    CSS = """
+    Button#login {
+        background: green;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#login:hover {
+        background: darkgreen;
+    }
+
+    Button#volver {
+        background: gray;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#volver:hover {
+        background: darkgray;
+    }
+    """
+
     def compose(self) -> ComposeResult:
         yield Header()
         yield Container(

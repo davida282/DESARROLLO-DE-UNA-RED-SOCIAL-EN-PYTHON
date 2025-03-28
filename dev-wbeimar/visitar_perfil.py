@@ -7,7 +7,21 @@ from textual.widgets import Button, Header, Footer, Static, Label
 
 class VisitarPerfil(Screen):
     """Pantalla para visitar el perfil de otro usuario en WatchPub."""
-    
+
+    CSS = """
+    Button#volver_perfil {
+        background: green;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#volver_perfil:hover {
+        background: darkgreen;
+    }
+    """
+
     def __init__(self, usuario_actual: str, usuario_a_visitar: str):
         super().__init__()
         self.usuario_actual = usuario_actual  # Guardar el usuario que inició sesión
@@ -29,14 +43,14 @@ class VisitarPerfil(Screen):
         mensaje = self.query_one("#mensaje", Label)
         titulo = self.query_one("#titulo", Static)
         lista_publicaciones = self.query_one("#lista_publicaciones", Static)
-        
+
         ref = db.reference(f"usuarios/{self.usuario_a_visitar}").get()
-        
+
         if ref:
             titulo.update(f"## Perfil de {self.usuario_a_visitar}")
             mensaje.update(f"✅ Perfil de {self.usuario_a_visitar} encontrado.")
             self.app.log(f"✅ Perfil de {self.usuario_a_visitar} encontrado en la base de datos.")
-            
+
             # Cargar publicaciones del usuario visitado
             publicaciones_ref = db.reference(f"usuarios/{self.usuario_a_visitar}/publicaciones").get()
             if publicaciones_ref:

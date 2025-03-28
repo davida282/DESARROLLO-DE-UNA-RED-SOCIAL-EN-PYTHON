@@ -6,6 +6,32 @@ from textual.widgets import Button, Header, Footer, Markdown
 class PantallaInicio(Screen):
     """Pantalla de inicio de WatchPub."""
 
+    CSS = """
+    Button#registro {
+        background: blue;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#registro:hover {
+        background: darkblue;
+    }
+
+    Button#login {
+        background: gray;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#login:hover {
+        background: darkgray;
+    }
+    """
+
     def compose(self) -> ComposeResult:
         yield Header()
         yield Container(

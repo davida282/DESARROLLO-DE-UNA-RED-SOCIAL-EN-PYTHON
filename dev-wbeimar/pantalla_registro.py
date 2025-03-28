@@ -1,29 +1,37 @@
-import firebase_admin
-from firebase_admin import credentials, db
 from textual.screen import Screen
 from textual.app import ComposeResult
 from textual.containers import Container
 from textual.widgets import Button, Header, Footer, Input, Static, Label
+from firebase_admin import db
 
-# Inicializar Firebase con Realtime Database
-cred = credentials.Certificate("dev-wbeimar/registroususarios-94b03-firebase-adminsdk-fbsvc-0549e88d91.json")  # Ruta exacta
-firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://registroususarios-94b03-default-rtdb.firebaseio.com/'
-})
 
-class PantallaRegistro(Screen):  # Cambio de nombre
+class PantallaRegistro(Screen):
     """Pantalla de registro de usuario para WatchPub."""
-    
+
+    CSS = """
+    Button#crear_cuenta {
+        background: green;
+        color: white;
+        border: none;
+        padding: 1;
+        width: 100%;
+    }
+
+    Button#crear_cuenta:hover {
+        background: darkgreen;
+    }
+    """
+
     def compose(self) -> ComposeResult:
         yield Header()
         yield Container(
             Static("## Crear Cuenta", classes="titulo"),
             Input(placeholder="Nombre de usuario", id="usuario"),
             Input(placeholder="Contraseña", password=True, id="password"),
-            Button("✅ Registrar", id="registrar"),
+            Button("✅ Crear Cuenta", id="crear_cuenta"),
             Button("⬅ Volver", id="volver"),
             Label("", id="mensaje")  # Mensaje de feedback
-        )
+        , id="formulario")
         yield Footer()
 
     def on_button_pressed(self, event):
@@ -32,8 +40,8 @@ class PantallaRegistro(Screen):  # Cambio de nombre
         input_usuario = self.query_one("#usuario", Input)
         input_password = self.query_one("#password", Input)
 
-        if event.button.id == "registrar":
-            usuario = input_usuario.value.strip().lower()  # Convertir a minúsculas
+        if event.button.id == "crear_cuenta":
+            usuario = input_usuario.value.strip().lower()
             password = input_password.value.strip()
 
             if usuario and password:
@@ -45,7 +53,7 @@ class PantallaRegistro(Screen):  # Cambio de nombre
                     else:
                         db.reference(f"usuarios/{usuario}").set({
                             "usuario": usuario,
-                            "password": password  # En producción, usa hashing para la contraseña
+                            "password": password
                         })
                         mensaje.update("✅ Usuario registrado exitosamente.")
                         self.app.log(f"✅ Usuario '{usuario}' registrado en la base de datos.")
@@ -56,9 +64,8 @@ class PantallaRegistro(Screen):  # Cambio de nombre
                 mensaje.update("⚠️ Por favor, completa todos los campos.")
                 self.app.log("⚠️ Por favor, completa todos los campos.")
 
-            # Borrar los campos después de presionar "Registrar"
             input_usuario.value = ""
             input_password.value = ""
-        
+
         elif event.button.id == "volver":
-            self.app.pop_screen()  # Regresa al menú principal
+            self.app.pop_screen()
