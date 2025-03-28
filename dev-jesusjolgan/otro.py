@@ -11,7 +11,7 @@ from textual.message import Message
 from textual import on
 
 # Inicializa Firebase
-cred = credentials.Certificate("Base de datos.json")
+cred = credentials.Certificate("credentials.json")
 firebase_admin.initialize_app(cred, {
     "databaseURL": "https://red-social-python-default-rtdb.firebaseio.com/"
 })
